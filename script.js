@@ -81,47 +81,74 @@ const LearnerSubmissions = [
 
 function getLearnerData(course, ag, submissions) {
   // here, we would process this data to achieve the desired result.
-  const result = [];
-
 
   // verify AssignmentGroup course_id mismatch
   if (course.id !== ag.course_id) {
-      //console.log("Error: course_ID mismatch. AssignmentGroup does not belong to the course")
-      //return;
-      throw new Error("Error: course_ID mismatch. AssignmentGroup does not belong to the course");
+    //console.log("Error: course_ID mismatch. AssignmentGroup does not belong to the course")
+    //return;
+    throw new Error(
+      "Error: course_ID mismatch. AssignmentGroup does not belong to the course"
+    );
   }
+  
+  // Declarations to process and store relevant data
+  const result = [];
+  // Get Learners and Assignments for processing
+  const learnerData = collectLearners(submissions);
+  const assigmentData = getAssigmnents(ag);
 
-
-  // analyze and collect revelant assignment info
-  const currentDate = new Date();
+  // analyze and collect relevant assignment due
+  const dueAt = new Date(ag.assignments.due_at);
+  //const submittedAt = new Date(submissions.submission.submitted_at);
   const dueAssignments = [];
   for (const assignment in ag.assignments) {
-      //assignment = ag.assignments;
-      if (new Date(assignment.due_at) <= currentDate) {
-          dueAssignments.push(assignment);
-      }
+    //if (dueAt <= submittedAt) {
+    dueAssignments.push(assignment);
+    //}
   }
 
+  console.log(learnerData);
+  //console.log(learnerData.length);
+  function collectLearners(submissions) {
+    const learners = [];
+    for (const [key, learner] of Object.entries(submissions)) {
+      //learners.push(`${key}: ${learner}`)
+      learners.push({
+        id: learner.learner_id,
+        assignment_id: learner.assignment_id,
+        score: learner.submission.score,
+        submitted_at: learner.submission.submitted_at,
+      });
+    }
 
-  const arr = [];
+    return learners;
+    //return Object.entries(submissions).map(([key, value]) => `${key}: ${value}`)
+  }
 
+  console.log(assigmentData);
+  function getAssigmnents(ag) {
+    const assignments = [];
+    for (const [key, assignment] of Object.entries(ag.assignments)) {
+      //learners.push(`${key}: ${learner}`)
+      assignments.push(assignment);
+    }
 
-
+    return assignments;
+    //return Object.entries(submissions).map(([key, value]) => `${key}: ${value}`)
+  }
 
   //  Gather LearnerData for processing
   for (const [key, learner] of Object.entries(submissions)) {
-      //learners.push(learner);
-      //console.log("\n");
-      //console.log({id: learner.learner_id});
-      console.log({id: learner.learner_id});
-     
+    const learners = [];
+    //learners.push(learner);
+    //console.log("\n");
+    //console.log({id: learner.learner_id});
+    //console.log({id: learner.learner_id});
   }
   // Gather AssignmentInfo for processing
-      for (const [key, assignments] of Object.entries(ag.assignments)) {
-     
-        console.log(assignments) ;
-
-         /*  const isLate = (new Date(assignments.due_at)> new Date(learner.submission.submitted_at));
+  for (const [key, assignments] of Object.entries(ag.assignments)) {
+    //console.log(assignments) ;
+    /*  const isLate = (new Date(assignments.due_at)> new Date(learner.submission.submitted_at));
 
 
           if (new Date(assignments.due_at)> new Date(learner.submission.submitted_at)) {
@@ -146,30 +173,11 @@ function getLearnerData(course, ag, submissions) {
                   points = learner.submission.score / assignments.points_possible;
               }
               //console.log(points); */
+    // console.log(assignments);
+    // console.log("\n");
+    //console.log({assignment_id: assignments.id});
+  }
 
-
-
-
-         
-
-
-
-
-
-
-
-
-
-
-          // console.log(assignments);
-          // console.log("\n");
-          //console.log({assignment_id: assignments.id});
-
-
-
-
-      }
- 
   //return result;
 }
 
